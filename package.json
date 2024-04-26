@@ -1,5 +1,12 @@
 {
   "name": "cache-manager-bun-sqlite",
+  "version": "0.0.1",
+  "description": "Bun sqlite implementation for cache-manager",
+  "keywords": ["bun", "sqlite", "cache-manager"],
+  "license": "MIT",
+  "exports": {
+    "bun": "./src/index.ts"
+  },
   "dependencies": {
     "cache-manager": "^5.5.1"
   },
