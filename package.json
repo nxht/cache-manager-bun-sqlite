@@ -1,11 +1,22 @@
 {
   "name": "cache-manager-bun-sqlite",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Bun sqlite implementation for cache-manager",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nxht/cache-manager-bun-sqlite"
+  },
   "keywords": ["bun", "sqlite", "cache-manager"],
   "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
   "exports": {
     "bun": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --target=bun --outdir=dist",
+    "lint": "biome check --apply src/",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "cache-manager": "^5.5.1"
