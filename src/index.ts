@@ -3,7 +3,14 @@ import type { Config, Milliseconds, Store } from 'cache-manager';
 
 export type BunSqliteStoreOptions = {
   path?: string;
+
+  /** table name */
   name?: string;
+
+  /** purge interval in ms
+   * @defaultValue 5 minutes
+   */
+  purgeInterval?: number;
 } & Config;
 
 type CacheEntity = {
@@ -68,6 +75,14 @@ export class BunSqliteStoreClass implements Store {
         `DELETE FROM ${tableName} WHERE expired_at < ?`,
       ),
     };
+
+    setInterval(
+      () => {
+        const ts = Date.now();
+        this.#STATEMENTS.purge.run(ts);
+      },
+      options.purgeInterval ?? 5 * 60 * 1000,
+    );
   }
 
   async get<T>(key: string): Promise<T | undefined> {
@@ -75,6 +90,14 @@ export class BunSqliteStoreClass implements Store {
     const result = this.#STATEMENTS.select.get(key);
 
     if (result && (result.expired_at === -1 || result.expired_at > ts)) {
+      return JSON.parse(result.val);
+    }
+  }
+
+  async getExpired<T>(key: string): Promise<T | undefined> {
+    const result = this.#STATEMENTS.select.get(key);
+
+    if (result) {
       return JSON.parse(result.val);
     }
   }

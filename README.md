@@ -12,10 +12,10 @@ bun install cache-manager-bun-sqlite
 ## Usage Examples
 
 ```typescript
-import { createCache } from 'cache-manager';
+import { caching } from 'cache-manager';
 import { BunSqliteStore } from 'cache-manager-bun-sqlite';
 
-const cache = createCache(
+const cache = caching(
   BunSqliteStore({
     name: 'test',
     path: ':memory:',

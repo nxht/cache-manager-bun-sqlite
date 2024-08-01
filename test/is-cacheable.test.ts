@@ -1,13 +1,13 @@
 import { afterEach, beforeAll, expect, test } from 'bun:test';
-import { createCache, type Cache, type Store } from 'cache-manager';
-import { BunSqliteStore } from '../src';
+import { caching, type Cache } from 'cache-manager';
+import { BunSqliteStore, type BunSqliteStoreClass } from '../src';
 
-let cache: Cache<Store>;
+let cache: Cache<BunSqliteStoreClass>;
 
 afterEach(async () => await cache.reset());
 
-beforeAll(() => {
-  cache = createCache(
+beforeAll(async () => {
+  cache = await caching(
     BunSqliteStore({
       name: 'test2',
       path: ':memory:',
