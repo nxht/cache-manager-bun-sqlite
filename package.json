@@ -1,6 +1,6 @@
 {
   "name": "cache-manager-bun-sqlite",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Bun sqlite implementation for cache-manager",
   "repository": {
     "type": "git",
