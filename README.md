@@ -20,6 +20,7 @@ const cache = caching(
     name: 'test',
     path: ':memory:',
     ttl: 10, // in ms,
+    purgeInterval: 5 * 60 * 1000, // in ms
   }),
 );
 

@@ -1,11 +1,24 @@
 import { Database, type Statement } from 'bun:sqlite';
 import type { Config, Milliseconds, Store } from 'cache-manager';
 
+type Serializer = (value: unknown) => string;
+type Deserializer = <T = unknown>(value: string) => T;
+
 export type BunSqliteStoreOptions = {
   path?: string;
 
   /** table name */
   name?: string;
+
+  /** serializer
+   * @defaultValue JSON.stringify
+   */
+  serializer?: Serializer;
+
+  /** deserializer
+   * @defaultValue JSON.parse
+   */
+  deserializer?: Deserializer;
 
   /** purge interval in ms
    * @defaultValue 5 minutes
@@ -37,6 +50,9 @@ export class BunSqliteStoreClass implements Store {
     purge: Statement;
   };
 
+  #serializer: Serializer;
+  #deserializer: Deserializer;
+
   constructor(options?: BunSqliteStoreOptions) {
     if (!options?.path) {
       throw new Error('Missing path');
@@ -50,6 +66,9 @@ export class BunSqliteStoreClass implements Store {
 
     this.#sqlite = new Database(options.path);
     this.#ttl = options?.ttl;
+
+    this.#serializer = options?.serializer ?? JSON.stringify;
+    this.#deserializer = options?.deserializer ?? JSON.parse;
 
     const tableName = options.name;
     this.#sqlite.exec(`
@@ -90,15 +109,16 @@ export class BunSqliteStoreClass implements Store {
     const result = this.#STATEMENTS.select.get(key);
 
     if (result && (result.expired_at === -1 || result.expired_at > ts)) {
-      return JSON.parse(result.val);
+      return this.#deserializer(result.val);
     }
   }
 
-  async getExpired<T>(key: string): Promise<T | undefined> {
+  /** get include expired data (for interval purge unit testing) */
+  async _getExpired<T>(key: string): Promise<T | undefined> {
     const result = this.#STATEMENTS.select.get(key);
 
     if (result) {
-      return JSON.parse(result.val);
+      return this.#deserializer(result.val);
     }
   }
 
@@ -124,7 +144,7 @@ export class BunSqliteStoreClass implements Store {
 
     this.#STATEMENTS.upsert.run(
       key,
-      JSON.stringify(data),
+      this.#serializer(data),
       created_at,
       expired_at,
     );
@@ -152,7 +172,7 @@ export class BunSqliteStoreClass implements Store {
     });
 
     const result: T[] = trans(args).map((data: CacheEntity) =>
-      JSON.parse(data.val),
+      this.#deserializer(data.val),
     );
 
     const fillLen = args.length - result.length;
@@ -177,7 +197,7 @@ export class BunSqliteStoreClass implements Store {
 
           this.#STATEMENTS.upsert.run(
             key,
-            JSON.stringify(data),
+            this.#serializer(data),
             created_at,
             expired_at,
           );

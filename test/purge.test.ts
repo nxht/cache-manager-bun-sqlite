@@ -19,14 +19,14 @@ beforeAll(async () => {
 });
 afterEach(async () => await cache.reset());
 
-test('ttl default', async () => {
+test('ttl default (purge)', async () => {
   await cache.set('foo', 'bar');
   expect(await cache.get<string>('foo')).toBe('bar');
   await Bun.sleep(ttlDefault + 2);
-  expect(await cache.store.getExpired('foo')).toBe(undefined);
+  expect(await cache.store._getExpired('foo')).toBe(undefined);
 });
 
-test('ttl custom', async () => {
+test('ttl custom (purge)', async () => {
   const ttl = 5;
   await cache.set('foo', 'bar', ttl);
   expect(await cache.get<string>('foo')).toBe('bar');
