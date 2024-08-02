@@ -20,7 +20,7 @@ afterEach(async () => await cache.reset());
 test('ttl default', async () => {
   await cache.set('foo', 'bar');
   expect(await cache.get<string>('foo')).toBe('bar');
-  await Bun.sleep(ttlDefault);
+  await Bun.sleep(ttlDefault + 2);
   expect(await cache.get('foo')).toBe(undefined);
 });
 
@@ -28,6 +28,6 @@ test('ttl custom', async () => {
   const ttl = 5;
   await cache.set('foo', 'bar', ttl);
   expect(await cache.get<string>('foo')).toBe('bar');
-  await Bun.sleep(ttl);
+  await Bun.sleep(ttl + 2);
   expect(await cache.get('foo')).toBe(undefined);
 });

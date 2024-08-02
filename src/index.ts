@@ -114,12 +114,8 @@ export class BunSqliteStoreClass implements Store {
   }
 
   /** get include expired data (for interval purge unit testing) */
-  async _getExpired<T>(key: string): Promise<T | undefined> {
-    const result = this.#STATEMENTS.select.get(key);
-
-    if (result) {
-      return this.#deserializer(result.val);
-    }
+  async _getRow(key: string): Promise<CacheEntity | null> {
+    return this.#STATEMENTS.select.get(key);
   }
 
   async ttl(key: string): Promise<number> {
