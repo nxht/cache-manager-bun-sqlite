@@ -19,7 +19,7 @@
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "cache-manager": "^5.5.1"
+    "cache-manager": "^5.7.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
