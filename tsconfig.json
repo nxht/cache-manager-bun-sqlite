@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
-    "allowJs": true,
+    "declaration": true,
+    "isolatedDeclarations": true,
     "module": "ESNext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
