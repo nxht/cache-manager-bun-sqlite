@@ -60,6 +60,24 @@ describe('mget() and mset()', () => {
   });
 });
 
+describe('mdel()', () => {
+  test('lets us delete several keys from cache', async () => {
+    await cache.store.mset([
+      ['foo1', 'bar1'],
+      ['foo2', 'bar2'],
+    ]);
+    expect(cache.store.mget('foo1', 'foo2')).resolves.toStrictEqual([
+      'bar1',
+      'bar2',
+    ]);
+    await cache.store.mdel('foo1', 'foo2');
+    expect(cache.store.mget('foo1', 'foo2')).resolves.toStrictEqual([
+      undefined,
+      undefined,
+    ]);
+  });
+});
+
 describe('del()', () => {
   beforeEach(async () => {
     await cache.set(key, value);
@@ -69,5 +87,15 @@ describe('del()', () => {
     expect(cache.get(key)).resolves.toEqual(value);
     await cache.del(key);
     expect(cache.get(key)).resolves.toBeUndefined();
+  });
+});
+
+describe('keys()', () => {
+  beforeEach(async () => {
+    await cache.set(key, value);
+  });
+
+  test('returns an array of keys', async () => {
+    expect(cache.store.keys()).resolves.toStrictEqual([key]);
   });
 });
