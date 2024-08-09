@@ -41,5 +41,17 @@
   },
   "organizeImports": {
     "enabled": false
-  }
+  },
+  "overrides": [
+    {
+      "include": ["test*.ts", "build.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsoleLog": "off"
+          }
+        }
+      }
+    }
+  ]
 }
