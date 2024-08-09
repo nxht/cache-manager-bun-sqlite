@@ -2,11 +2,12 @@
 .git
 .gitignore
 
-biome.jsonc
-
 node_modules/
 bun.lockb
 
+.vscode/
 test/
 
+biome.jsonc
 tsconfig.*
+build.ts
